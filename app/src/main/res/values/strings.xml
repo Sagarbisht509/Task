@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Task</string>
+
+    <string name="tasks">Tasks</string>
+    <string name="new_task">New Task</string>
+    <string name="create_new_task">Create New Task</string>
+    <string name="vertical_menu">Vertical Menu</string>
+    <string name="task_image">Task Image</string>
+    <string name="adding_new_task_button">Adding New Task Button</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="category">Category</string>
+    <string name="search_icon">search icon</string>
+    <string name="back_icon">back icon</string>
+    <string name="marketing">Marketing</string>
+    <string name="meeting">Meeting</string>
+    <string name="dev">Dev</string>
+    <string name="mobile">Mobile</string>
+    <string name="ui_design">UI Design</string>
+    <string name="html">HTML</string>
+    <string name="graphic_design">Graphic Design</string>
+    <string name="megento">Megento</string>
+    <string name="ios_app">IOS App</string>
+    <string name="android_app">Android App</string>
+    <string name="profile_icon">profile icon</string>
+</resources>

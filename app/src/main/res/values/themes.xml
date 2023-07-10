@@ -1,0 +1,39 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Task" parent="Theme.Material3.DayNight.NoActionBar">
+
+         <item name="colorPrimary">@color/white</item>
+
+    </style>
+
+    <style name="Theme.Task" parent="Base.Theme.Task" />
+
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.Task</item>
+
+    </style>
+
+
+    <!-- Dialog Theme -->
+    <style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:color">@color/blue</item>
+
+    </style>
+
+    <!-- Chip Theme -->
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+
+        <item name="chipBackgroundColor">@color/chip_bg_color</item>
+        <item name="android:text">@color/chip_text_color</item>
+        <item name="checkedIconVisible">false</item>
+
+    </style>
+
+</resources>
