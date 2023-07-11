@@ -2,25 +2,30 @@ package com.example.task.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.task.R
 import com.example.task.databinding.TaskItemLayoutBinding
-import com.example.task.models.TaskModel
+import com.example.task.models.Task
 
 class TaskAdapter(
-    private val taskList: List<TaskModel>
-) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private val listener: OnItemClickListener
+) : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
-    var onTaskClick: ((TaskModel) -> Unit)? = null
-
-    class TaskViewHolder(private val binding: TaskItemLayoutBinding) :
+    inner class TaskViewHolder(private val binding: TaskItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(task: TaskModel) {
+        fun bind(task: Task, listener: OnItemClickListener) {
             binding.taskTitle.text = task.title
             val time = "${task.startTime} to ${task.endTime}"
             binding.taskTiming.text = time
-            Glide.with(binding.root).load(task.image).into(binding.taskTagImage)
+            Glide.with(binding.root).load(getImageResource(task.category))
+                .into(binding.taskTagImage)
+
+            binding.root.setOnClickListener {
+                listener.onTaskItemClick(task)
+            }
         }
     }
 
@@ -30,14 +35,37 @@ class TaskAdapter(
         return TaskViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = taskList.size
-
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val task = taskList[position]
-        holder.bind(task)
+        holder.bind(getItem(position), listener)
+    }
 
-        holder.itemView.setOnClickListener {
-            onTaskClick?.invoke(task)
+    interface OnItemClickListener {
+        fun onTaskItemClick(task: Task)
+    }
+
+    private fun getImageResource(title: String): Int {
+        return when (title.lowercase()) {
+            "meeting" -> R.drawable.ic_meeting
+            "dev" -> R.drawable.ic_dev
+            "mobile" -> R.drawable.ic_mobile
+            "ui design" -> R.drawable.ic_graphic_ui
+            "html" -> R.drawable.ic_html
+            "graphic design" -> R.drawable.ic_graphic_ui
+            "android app" -> R.drawable.ic_android_ios
+            "megento" -> R.drawable.ic_graphic_ui
+            "ios app" -> R.drawable.ic_android_ios
+            else -> R.drawable.ic_meeting
         }
+    }
+
+}
+
+class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem == newItem
     }
 }

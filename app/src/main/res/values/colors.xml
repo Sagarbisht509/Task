@@ -5,4 +5,8 @@
 
     <color name="blue">#3F53E6</color>
     <color name="light_gray">#ECF2FF</color>
+
+
+    <color name="selected_bg_color">@color/white</color>
+    <color name="unselected_bg_color">@color/blue</color>
 </resources>

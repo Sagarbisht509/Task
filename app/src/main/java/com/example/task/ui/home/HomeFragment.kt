@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import com.example.task.adapter.TaskAdapter
 import com.example.task.databinding.FragmentHomeBinding
 import com.example.task.local_db.TaskDatabase
 import com.example.task.models.Task
-import com.example.task.models.TaskModel
 import com.example.task.repository.RepoImpl
 import com.example.task.repository.TaskRepository
 import com.google.gson.Gson
@@ -36,23 +34,40 @@ class HomeFragment : Fragment() {
     private lateinit var calenderAdapter: CalenderAdapter
     private lateinit var taskAdapter: TaskAdapter
 
+    private val taskAdapterListener = object : TaskAdapter.OnItemClickListener {
+        override fun onTaskItemClick(task: Task) {
+            val bundle = Bundle()
+            bundle.putString("task", Gson().toJson(task))
+            findNavController().navigate(R.id.action_homeFragment_to_addTaskFragment, bundle)
+        }
+    }
+
+    private val calenderAdapterListener = object : CalenderAdapter.OnItemClickListener {
+        override fun onCalenderItemClick(localDate: LocalDate) {
+            viewModel.updateDate(localDate)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        taskDatabase = TaskDatabase.getDatabase(requireContext())
+        repo = RepoImpl()
+        taskRepository = TaskRepository(taskDatabase)
+        val factory = HomeViewModelProviderFactory(repo, taskRepository)
+        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+
+        taskAdapter = TaskAdapter(taskAdapterListener)
+        calenderAdapter = CalenderAdapter(calenderAdapterListener)
+
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        taskDatabase = TaskDatabase.getDatabase(requireContext())
-        repo = RepoImpl()
-        taskRepository = TaskRepository(taskDatabase)
-        val factory = HomeViewModelProviderFactory(repo, taskRepository)
-        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
         observer()
 
@@ -63,6 +78,13 @@ class HomeFragment : Fragment() {
         binding.calenderIcon.setOnClickListener {
             onCalenderIconCLicked()
         }
+
+        viewModel.taskByDate.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                taskAdapter.submitList(it)
+                setUpTaskRecyclerView()
+            }
+        })
     }
 
     private fun onCalenderIconCLicked() {
@@ -82,49 +104,36 @@ class HomeFragment : Fragment() {
     }
 
     private fun setMonthYearOfDate(date: LocalDate) {
-        val text = date.month.toString() + ", " + date.year.toString()
-        binding.monthYearTextView.text = text
+        val month = date.month.toString()
+        var monthFirstThreeChar = month.subSequence(0, 3)
+        val formatMonth = monthFirstThreeChar[0] + monthFirstThreeChar.substring(1, 3).lowercase()
+        val formatDate = formatMonth + ", " + date.year.toString()
+        binding.monthYearTextView.text = formatDate
     }
 
     private fun observer() {
-        viewModel.list.observe(viewLifecycleOwner, Observer {
-            setUpDayDateRecyclerView(it)
+        viewModel.weekList.observe(viewLifecycleOwner, Observer {
+            calenderAdapter.submitList(it)
+            setUpDayDateRecyclerView()
         })
 
-        viewModel.localDate.observe(viewLifecycleOwner, Observer { date ->
+        viewModel.selectedDate.observe(viewLifecycleOwner, Observer { date ->
             setMonthYearOfDate(date)
         })
-
-        viewModel.taskList.observe(viewLifecycleOwner, Observer {
-            setUpTaskRecyclerView(it)
-        })
     }
 
-
-    private fun setUpTaskRecyclerView(tasks: List<TaskModel>) {
-        taskAdapter = TaskAdapter(tasks)
+    private fun setUpTaskRecyclerView() {
         binding.taskRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = taskAdapter
         }
-
-        taskAdapter.onTaskClick = {
-            val bundle = Bundle()
-            bundle.putString("task", Gson().toJson(it))
-            findNavController().navigate(R.id.action_homeFragment_to_addTaskFragment, bundle)
-        }
     }
 
-    private fun setUpDayDateRecyclerView(week: ArrayList<Pair<String, String>>) {
-
-        calenderAdapter = CalenderAdapter(week)
+    private fun setUpDayDateRecyclerView() {
         binding.dayDateRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 7)
             adapter = calenderAdapter
-        }
-
-        calenderAdapter.onItemClick = {
-            Toast.makeText(context, it.first + " " + it.second, Toast.LENGTH_SHORT).show()
         }
     }
 

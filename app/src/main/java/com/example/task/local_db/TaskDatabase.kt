@@ -10,9 +10,6 @@ import com.example.task.models.Task
     entities = [Task::class],
     version = 1
 )
-/*@TypeConverters(
-    Convertors::class
-)*/
 abstract class TaskDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao

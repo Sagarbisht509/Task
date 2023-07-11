@@ -7,7 +7,6 @@ import com.example.task.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class AddTaskViewModel(
     private val taskRepository: TaskRepository
@@ -52,7 +51,7 @@ class AddTaskViewModel(
     }
 
     fun addNewTask(task: Task) = viewModelScope.launch {
-        taskRepository.insertTask(task)
+        taskRepository.upsertTask(task)
     }
 
     fun validateUserInput(): Boolean {

@@ -1,14 +1,13 @@
 package com.example.task.ui.home
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.task.models.Task
-import com.example.task.models.TaskModel
 import com.example.task.repository.Repo
 import com.example.task.repository.TaskRepository
-import com.example.task.utils.Constants
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -17,32 +16,46 @@ class HomeViewModel(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    val localDate: MutableLiveData<LocalDate> = MutableLiveData()
+    val selectedDate = MutableLiveData(LocalDate.now())
+    val weekList: MutableLiveData<ArrayList<LocalDate>> = MutableLiveData()
 
-    val list: MutableLiveData<ArrayList<Pair<String, String>>> = MutableLiveData()
-
-    val taskList: MutableLiveData<List<TaskModel>> = MutableLiveData()
+    private var _taskByDate: MutableLiveData<List<Task>> = MutableLiveData()
+    val taskByDate: LiveData<List<Task>> get() = _taskByDate
 
     init {
-        localDate.value = LocalDate.now()
+        selectedDate.postValue(LocalDate.now())
+        getData()
         getWeekData()
         getTaskList()
     }
 
-    private fun getTaskList() {
-       val response = Constants.getDummyDate()
-        // val response = taskRepository.getTask(date: String)
-        taskList.value = response
+    private fun getData() = viewModelScope.launch {
+        val data = viewModelScope.async {
+            taskRepository.getTask(selectedDate.value.toString())
+        }
+
+        _taskByDate.postValue(data.await())
     }
+
+    fun getTaskList() = taskByDate
+
 
     private fun getWeekData() = viewModelScope.launch {
-        list.postValue(repo.getDateOfThisWeek(localDate.value!!))
+        weekList.postValue(repo.getDateOfThisWeek(selectedDate.value!!))
     }
 
-    fun updateDate(selectedDate: LocalDate) {
-        localDate.value = selectedDate
+    fun updateDate(date: LocalDate) {
+        selectedDate.value = date
         getWeekData()
-        getTaskList()
+        getData()
+    }
+
+    fun deleteTask(task: Task) = viewModelScope.launch {
+        taskRepository.deleteTask(task)
+    }
+
+    fun upsertTask(task: Task) = viewModelScope.launch {
+        taskRepository.upsertTask(task)
     }
 
 }

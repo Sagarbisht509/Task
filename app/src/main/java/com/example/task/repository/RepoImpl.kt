@@ -5,15 +5,15 @@ import java.time.LocalDate
 
 class RepoImpl : Repo {
 
-    override suspend fun getDateOfThisWeek(selectedDate: LocalDate): ArrayList<Pair<String, String>> {
+    override suspend fun getDateOfThisWeek(selectedDate: LocalDate): ArrayList<LocalDate> {
 
-        val week: ArrayList<Pair<String, String>> = ArrayList()
+        val week: ArrayList<LocalDate> = ArrayList()
 
         var current = getCurrentSaturdayDate(selectedDate)
         val endDate = current.plusWeeks(1)
 
         while (current.isBefore(endDate)) {
-            week.add(Pair(current.dayOfWeek.toString().substring(0, 3), current.dayOfMonth.toString()))
+            week.add(current)
             current = current.plusDays(1)
         }
 

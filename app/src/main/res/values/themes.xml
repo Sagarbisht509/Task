@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Task" parent="Theme.Material3.DayNight.NoActionBar">
 
-         <item name="colorPrimary">@color/white</item>
+        <!-- <item name="colorPrimary">@color/white</item>-->
 
     </style>
 
@@ -20,12 +20,12 @@
 
 
     <!-- Dialog Theme -->
-    <style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <!--<style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
 
         <item name="colorAccent">@color/blue</item>
         <item name="android:color">@color/blue</item>
 
-    </style>
+    </style>-->
 
     <!-- Chip Theme -->
     <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">

@@ -14,39 +14,58 @@
             android:layout_height="match_parent"
             android:padding="15dp">
 
-            <ImageView
-                android:id="@+id/taskTagImage"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="@string/task_image"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_shape" />
+
+                <ImageView
+                    android:id="@+id/taskTagImage"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/task_image"
+                    android:scaleType="centerCrop" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/taskTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="3dp"
+                android:gravity="center"
                 android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textSize="19sp"
                 android:textStyle="bold"
-                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/taskTiming"
-                app:layout_constraintStart_toEndOf="@id/taskTagImage"
-                app:layout_constraintTop_toTopOf="@id/taskTagImage" />
+                app:layout_constraintStart_toEndOf="@id/frameLayout"
+                app:layout_constraintTop_toTopOf="@id/frameLayout" />
 
             <TextView
                 android:id="@+id/taskTiming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
                 android:includeFontPadding="false"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@id/taskTagImage"
+                android:maxLines="1"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/frameLayout"
                 app:layout_constraintStart_toStartOf="@+id/taskTitle"
                 app:layout_constraintTop_toBottomOf="@id/taskTitle" />
 
@@ -56,9 +75,9 @@
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/vertical_menu"
                 android:src="@drawable/ic_more_vertical"
-                app:layout_constraintBottom_toBottomOf="@id/taskTagImage"
+                app:layout_constraintBottom_toBottomOf="@id/frameLayout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/taskTagImage" />
+                app:layout_constraintTop_toTopOf="@id/frameLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

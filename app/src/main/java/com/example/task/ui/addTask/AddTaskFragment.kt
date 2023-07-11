@@ -1,7 +1,6 @@
 package com.example.task.ui.addTask
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.task.DatePickerFragment
-import com.example.task.R
 import com.example.task.TimePickerFragment
 import com.example.task.databinding.FragmentAddTaskBinding
 import com.example.task.local_db.TaskDatabase
 import com.example.task.models.Task
-import com.example.task.models.TaskModel
 import com.example.task.repository.TaskRepository
-import com.example.task.utils.Constants
 import com.google.android.material.chip.Chip
 import com.google.gson.Gson
 
@@ -27,7 +23,6 @@ class AddTaskFragment : Fragment() {
     private var _binding: FragmentAddTaskBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var list: List<String>
 
     private lateinit var viewModel: AddTaskViewModel
 
@@ -77,7 +72,7 @@ class AddTaskFragment : Fragment() {
         binding.createNewTaskBtn.setOnClickListener {
             if (viewModel.validateUserInput()) {
                 Toast.makeText(context, "Task Added", Toast.LENGTH_SHORT).show()
-                //viewModel.addNewTask(getTask())
+                viewModel.addNewTask(getTask())
                 navigateToHomeScreen()
             } else {
                 Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
@@ -90,7 +85,7 @@ class AddTaskFragment : Fragment() {
     private fun setInitialValues() {
         val json = arguments?.getString("task")
         if(json != null) {
-            val task = Gson().fromJson(json, TaskModel::class.java)
+            val task = Gson().fromJson(json, Task::class.java)
             task?.let {
                 viewModel.onTitleTextChanged(it.title)
                 viewModel.onDescriptionTextChanged(it.description)
